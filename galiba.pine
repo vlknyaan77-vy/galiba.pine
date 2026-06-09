@@ -55,46 +55,48 @@ table_pos      = input.string("Top Right", "Tablo Konumu / Table Position", opti
 
 // --- YARDIMCI FONKSİYONLAR / HELPERS ---
 f_get_g5_val(string s) =>
-    s == "0.785" ? 0.7853981633974483 :
-    s == "1.571" ? 1.5707963267948966 :
-    s == "2.356" ? 2.356194490192345 :
-    s == "3.142" ? 3.141592653589793 :
-    s == "3.927" ? 3.9269908169872414 :
-    s == "4.712" ? 4.71238898038469 :
-    s == "5.498" ? 5.497787143782138 :
-    s == "6.283" ? 6.283185307179586 :
-    s == "7.069" ? 7.0685834705770345 :
-    s == "7.854" ? 7.853981633974483 :
-    s == "8.639" ? 8.63937979737193 :
-    s == "9.425" ? 9.42477796076938 :
-    s == "10.210" ? 10.210176124166829 :
-    s == "10.996" ? 10.995574287564276 :
-    s == "11.781" ? 11.780972450961723 :
-    s == "12.566" ? 12.566370614359172 :
-    s == "13.352" ? 13.351768777756622 :
-    s == "14.137" ? 14.137166941154069 :
-    s == "14.923" ? 14.922565104551516 :
-    s == "15.708" ? 15.707963267948966 :
-    s == "16.493" ? 16.493361431346415 :
-    s == "17.279" ? 17.27875959474386 :
-    s == "18.064" ? 18.06415775814131 :
-    s == "18.850" ? 18.84955592153876 :
-    s == "19.635" ? 19.634954084936208 :
-    s == "20.420" ? 20.420352248333657 :
-    s == "21.206" ? 21.205750411731103 :
-    s == "21.991" ? 21.991148575128552 :
-    s == "22.777" ? 22.776546738526 :
-    s == "23.562" ? 23.561944901923447 :
-    s == "24.347" ? 24.347343065320896 :
-    s == "25.133" ? 25.132741228718345 :
-    s == "25.918" ? 25.918139392115794 :
-    s == "26.704" ? 26.703537555513243 :
-    s == "27.489" ? 27.48893571891069 :
-    s == "28.274" ? 28.274333882308138 :
-    s == "29.060" ? 29.059732045705587 :
-    s == "29.845" ? 29.845130209103033 :
-    s == "30.631" ? 30.630528372500482 :
-    s == "31.416" ? 31.41592653589793 : 0.0
+    switch s
+        "0.785" => 0.7853981633974483
+        "1.571" => 1.5707963267948966
+        "2.356" => 2.356194490192345
+        "3.142" => 3.141592653589793
+        "3.927" => 3.9269908169872414
+        "4.712" => 4.71238898038469
+        "5.498" => 5.497787143782138
+        "6.283" => 6.283185307179586
+        "7.069" => 7.0685834705770345
+        "7.854" => 7.853981633974483
+        "8.639" => 8.63937979737193
+        "9.425" => 9.42477796076938
+        "10.210" => 10.210176124166829
+        "10.996" => 10.995574287564276
+        "11.781" => 11.780972450961723
+        "12.566" => 12.566370614359172
+        "13.352" => 13.351768777756622
+        "14.137" => 14.137166941154069
+        "14.923" => 14.922565104551516
+        "15.708" => 15.707963267948966
+        "16.493" => 16.493361431346415
+        "17.279" => 17.27875959474386
+        "18.064" => 18.06415775814131
+        "18.850" => 18.84955592153876
+        "19.635" => 19.634954084936208
+        "20.420" => 20.420352248333657
+        "21.206" => 21.205750411731103
+        "21.991" => 21.991148575128552
+        "22.777" => 22.776546738526
+        "23.562" => 23.561944901923447
+        "24.347" => 24.347343065320896
+        "25.133" => 25.132741228718345
+        "25.918" => 25.918139392115794
+        "26.704" => 26.703537555513243
+        "27.489" => 27.48893571891069
+        "28.274" => 28.274333882308138
+        "29.060" => 29.059732045705587
+        "29.845" => 29.845130209103033
+        "30.631" => 30.630528372500482
+        "31.416" => 31.41592653589793
+        => 0.0
 
 f_fill_cluster(float main_val, float step) =>
     float[] res = array.new_float(0)
@@ -183,8 +185,21 @@ max_bars_back(eff_l, 2000)
 max_bars_back(eff_c, 2000)
 
 // 2. Manual Gamma Selections
-float p_gamma_val_manual = p_gamma_drawer_sel == "Çekmece 1" ? p_gamma_opt : p_gamma_drawer_sel == "Çekmece 2" ? p_gamma_opt_2 : p_gamma_drawer_sel == "Çekmece 3" ? p_gamma_opt_3 : p_gamma_drawer_sel == "Çekmece 4" ? p_gamma_opt_4 : p_gamma_drawer_sel == "Çekmece 5" ? f_get_g5_val(p_gamma_opt_5) : p_gamma_opt_6
-float v_gamma_val_manual = v_gamma_drawer_sel == "Çekmece 1" ? v_gamma_opt : v_gamma_drawer_sel == "Çekmece 2" ? v_gamma_opt_2 : v_gamma_drawer_sel == "Çekmece 3" ? v_gamma_opt_3 : v_gamma_drawer_sel == "Çekmece 4" ? v_gamma_opt_4 : v_gamma_drawer_sel == "Çekmece 5" ? f_get_g5_val(v_gamma_opt_5) : v_gamma_opt_6
+float p_gamma_val_manual = switch p_gamma_drawer_sel
+    "Çekmece 1" => p_gamma_opt
+    "Çekmece 2" => p_gamma_opt_2
+    "Çekmece 3" => p_gamma_opt_3
+    "Çekmece 4" => p_gamma_opt_4
+    "Çekmece 5" => f_get_g5_val(p_gamma_opt_5)
+    => p_gamma_opt_6
+
+float v_gamma_val_manual = switch v_gamma_drawer_sel
+    "Çekmece 1" => v_gamma_opt
+    "Çekmece 2" => v_gamma_opt_2
+    "Çekmece 3" => v_gamma_opt_3
+    "Çekmece 4" => v_gamma_opt_4
+    "Çekmece 5" => f_get_g5_val(v_gamma_opt_5)
+    => v_gamma_opt_6
 
 // 3. Anchor & Lookback State
 int lb_input = lb_input_val
@@ -215,11 +230,23 @@ if barstate.islast
     v_g_main := v_gamma_val_manual
 
     p_g_prevs := array.new_float(0)
-    p_step = p_gamma_drawer_sel == "Çekmece 1" ? 1.125 : p_gamma_drawer_sel == "Çekmece 2" ? 2.25 : p_gamma_drawer_sel == "Çekmece 3" ? 4.5 : p_gamma_drawer_sel == "Çekmece 4" ? 9.0 : p_gamma_drawer_sel == "Çekmece 5" ? 0.7853981633974483 : 1.125
+    p_step = switch p_gamma_drawer_sel
+        "Çekmece 1" => 1.125
+        "Çekmece 2" => 2.25
+        "Çekmece 3" => 4.5
+        "Çekmece 4" => 9.0
+        "Çekmece 5" => 0.7853981633974483
+        => 1.125
     p_g_nexts := f_fill_cluster(p_g_main, p_step)
     
     v_g_prevs := array.new_float(0)
-    v_step = v_gamma_drawer_sel == "Çekmece 1" ? 1.125 : v_gamma_drawer_sel == "Çekmece 2" ? 2.25 : v_gamma_drawer_sel == "Çekmece 3" ? 4.5 : v_gamma_drawer_sel == "Çekmece 4" ? 9.0 : v_gamma_drawer_sel == "Çekmece 5" ? 0.7853981633974483 : 1.125
+    v_step = switch v_gamma_drawer_sel
+        "Çekmece 1" => 1.125
+        "Çekmece 2" => 2.25
+        "Çekmece 3" => 4.5
+        "Çekmece 4" => 9.0
+        "Çekmece 5" => 0.7853981633974483
+        => 1.125
     v_g_nexts := f_fill_cluster(v_g_main, v_step)
 
 // 5. Final Effective Gammas & Sizes
