@@ -1,5 +1,5 @@
 //@version=6
-indicator("Volcanic Auto Peaks & Valleys v6", overlay=true, max_bars_back=2000, max_lines_count=500, max_labels_count=500, max_polylines_count=100)
+indicator("Volcanic Auto Peaks & Valleys v6", overlay=true, max_bars_back=4000, max_lines_count=500, max_labels_count=500, max_polylines_count=100)
 
 // --- GRUPLAR / GROUPS ---
 string GRP_AUTO = "⚓ Otomatik Çapa Ayarları / Auto Anchor Settings"
@@ -38,11 +38,16 @@ v_gamma_opt_6    = input.float(1.44, "Dip Gamma (G6)", options=[0.315, 1.44, 2.5
 v_gamma_opt_7    = input.float(3.0, "Dip Gamma (G7)", options=[3.0, 6.0, 9.0, 12.0, 15.0, 18.0, 21.0, 24.0, 27.0, 30.0], group=GRP_FILT_V)
 
 auto_atr       = input.bool(true, "Otomatik ATR Periyodu / Auto ATR Period", group=GRP_VIS)
-atr_mult       = input.float(3.69, "ATR Periyot Çarpanı / ATR Period Multiplier", options=[0.00369, 0.0369, 0.369, 3.69, 36.9, 369, 3693], group=GRP_VIS, tooltip="Otomatik modda zaman dilimi (dakika) bu sayı ile çarpılarak ATR periyodu bulunur.")
-atr_opt        = input.float(8.1, "Manuel ATR Periyodu / Manual ATR Period", minval=0.01, maxval=1990.0, step=0.1, group=GRP_VIS)
+atr_mult_1     = input.float(1.0, "ATR Çarpanı (Ç1)", options=[0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 3.69], group=GRP_VIS, tooltip="Çekmece 1 seçiliyken kullanılan otomatik mod çarpanı.")
+atr_mult_2     = input.float(2.0, "ATR Çarpanı (Ç2)", options=[0.001, 0.01, 0.1, 1.0, 2.0, 10.0, 100.0, 1000.0], group=GRP_VIS, tooltip="Çekmece 2 seçiliyken kullanılan otomatik mod çarpanı.")
+atr_drawer_sel = input.string("Çekmece 1", "ATR Çekmece Seçimi", options=["Çekmece 1", "Çekmece 2"], group=GRP_VIS)
+atr_opt        = input.float(8.1, "Manuel ATR Periyodu (Ç1)", minval=0.01, maxval=3141.6, step=0.1, group=GRP_VIS)
+atr_opt_2      = input.string("pi", "Manuel ATR Periyodu (Ç2)", options=["pi/100", "pi/10", "pi", "pi*10", "pi*100", "pi*1000"], group=GRP_VIS)
 
-float atr_per_auto = (timeframe.in_seconds() / 60.0) * atr_mult
-float atr_per = math.min(1990.0, auto_atr ? atr_per_auto : atr_opt)
+float eff_atr_mult = atr_drawer_sel == "Çekmece 1" ? atr_mult_1 : atr_mult_2
+float atr_per_auto = (timeframe.in_seconds() / 60.0) * eff_atr_mult
+float atr_per_manual = atr_drawer_sel == "Çekmece 1" ? atr_opt : f_get_atr_pi_val(atr_opt_2)
+float atr_per = math.min(3141.6, auto_atr ? atr_per_auto : atr_per_manual)
 
 show_peak      = input.bool(true, "Tepe Filtresini Göster / Show Peak Filter", group=GRP_VIS)
 show_valley    = input.bool(true, "Dip Filtresini Göster / Show Valley Filter", group=GRP_VIS)
@@ -56,6 +61,16 @@ show_table     = input.bool(true, "Bilgi Tablosunu Göster / Show Info Table", g
 table_pos      = input.string("Top Right", "Tablo Konumu / Table Position", options=["Top Right", "Bottom Right", "Top Left", "Bottom Left", "Middle Right"], group=GRP_TAB)
 
 // --- YARDIMCI FONKSİYONLAR / HELPERS ---
+f_get_atr_pi_val(string s) =>
+    switch s
+        "pi/100"  => 0.031415926535898
+        "pi/10"   => 0.314159265358979
+        "pi"      => 3.141592653589793
+        "pi*10"   => 31.415926535897931
+        "pi*100"  => 314.159265358979326
+        "pi*1000" => 3141.592653589792917
+        => 3.141592653589793
+
 f_get_g5_val(string s) =>
     switch s
         "0.785" => 0.7853981633974483
@@ -177,14 +192,14 @@ bool is_in_range = (lb_mode == "Global (Maksimum)") or
 float rng_per   = atr_per
 float cur_sz_unit_raw = f_kama_atr(tr, nz(rng_per, 8.1))
 float cur_sz_unit = is_in_range ? cur_sz_unit_raw : 0.0
-max_bars_back(cur_sz_unit, 2000)
-max_bars_back(high, 2000)
-max_bars_back(low, 2000)
-max_bars_back(close, 2000)
-max_bars_back(time, 2000)
-max_bars_back(eff_h, 2000)
-max_bars_back(eff_l, 2000)
-max_bars_back(eff_c, 2000)
+max_bars_back(cur_sz_unit, 4000)
+max_bars_back(high, 4000)
+max_bars_back(low, 4000)
+max_bars_back(close, 4000)
+max_bars_back(time, 4000)
+max_bars_back(eff_h, 4000)
+max_bars_back(eff_l, 4000)
+max_bars_back(eff_c, 4000)
 
 // 2. Manual Gamma Selections
 float p_gamma_val_manual = switch p_gamma_drawer_sel
@@ -414,7 +429,7 @@ if show_table and barstate.islast
     table.cell(info_tab, 1, 4, str.tostring(atr_per, "#.###") + (auto_atr ? " (Oto)" : ""), bgcolor=color.new(color.gray, 90), text_color=c_txt)
     
     table.cell(info_tab, 0, 5, "ATR Çarpanı", bgcolor=color.new(color.gray, 90), text_color=c_txt)
-    table.cell(info_tab, 1, 5, str.tostring(atr_mult, "#.#####"), bgcolor=color.new(color.gray, 90), text_color=c_txt)
+    table.cell(info_tab, 1, 5, str.tostring(eff_atr_mult, "#.#####"), bgcolor=color.new(color.gray, 90), text_color=c_txt)
 
 var label lp = na
 var label lv = na
